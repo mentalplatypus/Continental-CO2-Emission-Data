@@ -6,45 +6,49 @@
 <meta name="description" content="A stacked area chart of annual production-based CO₂ emissions for each continent, from the start of the Industrial Revolution to 2020.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Chivo+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600&display=swap">
 <style>
-  /* One chart on graph paper: title, the matplotlib figure on a white card, then notes and links. */
+  /* One chart on a soft gradient: title, the matplotlib figure on a white card, then notes and links.
+     Dusk theme, shared with the home page (mentalplatypus.github.io). */
   :root {
-    --paper: #eef3f7; --board: #fbfdff; --grid: #cfe0ee; --grid-major: #a9c6de;
-    --ink: #1d2a44; --ink-soft: #5b6a85; --apple: #d6372b;
+    --bg-1: #eef0ff; --bg-2: #f6eefc; --bg-3: #fff1ea;
+    --line: rgba(40, 34, 110, 0.12); --ink: #1e1b3a; --ink-soft: #5d5a7a; --accent: #5b5bd6;
+    --shadow: 0 1px 2px rgba(40, 34, 110, 0.06), 0 12px 32px rgba(40, 34, 110, 0.08);
     --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
-    --font-mono: "Chivo Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --paper: #0c1830; --board: #10203d; --grid: #1c3358; --grid-major: #2a4a7a;
-      --ink: #e8f0ff; --ink-soft: #8ea3c7; --apple: #ff6a55; color-scheme: dark;
+      --bg-1: #0f1226; --bg-2: #1d1438; --bg-3: #2a1a2e;
+      --line: rgba(255, 255, 255, 0.12); --ink: #ecebff; --ink-soft: #a6a3c8; --accent: #8f8cff;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35); color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --paper: #0c1830; --board: #10203d; --grid: #1c3358; --grid-major: #2a4a7a;
-    --ink: #e8f0ff; --ink-soft: #8ea3c7; --apple: #ff6a55; color-scheme: dark;
+    --bg-1: #0f1226; --bg-2: #1d1438; --bg-3: #2a1a2e;
+    --line: rgba(255, 255, 255, 0.12); --ink: #ecebff; --ink-soft: #a6a3c8; --accent: #8f8cff;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.35); color-scheme: dark;
   }
   body {
-    margin: 0; color: var(--ink); font-family: var(--font-mono);
-    background-color: var(--paper);
-    background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size: 24px 24px;
-    padding-block: 40px;
+    margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--font-body);
+    background-color: var(--bg-1);
+    background-image: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+    background-attachment: fixed;
+    padding-block: 48px;
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     padding-right: max(16px, env(safe-area-inset-right, 0px));
   }
   .wrap { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
-  .home { align-self: flex-start; font-size: 0.8rem; font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--grid-major); }
-  .home:hover { border-bottom-color: var(--apple); }
+  .home { align-self: flex-start; font-size: 0.85rem; font-weight: 600; color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--line); }
+  .home:hover { border-bottom-color: var(--accent); }
   h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.7rem, 5vw, 2.6rem); letter-spacing: -0.03em; line-height: 1.05; margin: 0; text-wrap: balance; }
-  .lede { margin: 0; color: var(--ink-soft); font-size: 0.85rem; line-height: 1.6; max-width: 70ch; }
-  figure { margin: 0; background: #fff; border: 2px solid var(--ink); border-radius: 4px; box-shadow: 6px 6px 0 var(--grid-major); padding: 12px; }
+  .lede { margin: 0; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; max-width: 70ch; }
+  figure { margin: 0; background: #fff; border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 14px; }
   figure img { display: block; width: 100%; height: auto; }
-  .notes { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; font-size: 0.8rem; color: var(--ink-soft); }
-  .notes a { color: var(--ink); font-weight: 600; text-decoration-color: var(--grid-major); text-underline-offset: 3px; }
-  a:hover { text-decoration-color: var(--apple); }
-  a:focus-visible { outline: 3px solid var(--apple); outline-offset: 3px; }
+  .notes { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 24px; font-size: 0.85rem; color: var(--ink-soft); }
+  .notes a { color: var(--ink); font-weight: 600; text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .notes a:hover { text-decoration-color: var(--accent); }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 </style>
 
 <div class="wrap">
